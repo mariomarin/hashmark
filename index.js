@@ -57,6 +57,7 @@ module.exports = function hashmark(contents, options, callback) {
         }
         stream.on('end', function () {
             var digest = hash.digest('hex');
+            var strippedFileName = stream.fileName.replace(/[\/.]/g, '_');
             if (options.length) {
                 digest = digest.slice(0, options.length);
             }
@@ -66,10 +67,10 @@ module.exports = function hashmark(contents, options, callback) {
                     if (err) {
                         return mapEvents.emit('error', err);
                     }
-                    mapEvents.emit('file', stream.fileName, fileName);
+                    mapEvents.emit('file', strippedFileName, fileName);
                 });
             } else {
-                mapEvents.emit('file', stream.fileName, digest);
+                mapEvents.emit('file', strippedFileName, digest);
             }
         });
         stream.pipe(hash, { end: false });
